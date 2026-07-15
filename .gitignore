@@ -1,0 +1,11 @@
+# Python
+.venv/
+
+# Secrets
+config.py
+
+# JetBrains
+.idea/
+
+# Mac OS
+.DS_Store
