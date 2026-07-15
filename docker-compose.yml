@@ -1,0 +1,27 @@
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    restart: unless-stopped
+
+  api:
+    build: .
+    container_name: tyto-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - influxdb
+    restart: unless-stopped
+
+volumes:
+  influxdb-data:
+    external: true
+    name: tyto_influxdb-data
+  influxdb-config:
+    external: true
+    name: tyto_influxdb-config
