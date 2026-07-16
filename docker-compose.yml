@@ -1,27 +1,47 @@
+name: tyto-api
+
 services:
   influxdb:
     image: influxdb:latest
     container_name: influxdb
     ports:
-      - "8086:8086"
+      - "8086:8086" # Gardé pour que tu puisses accéder à l'interface InfluxDB en local
     volumes:
       - influxdb-data:/var/lib/influxdb2
       - influxdb-config:/etc/influxdb2
+    networks:
+      - tyto-internal
     restart: unless-stopped
 
   api:
     build: .
     container_name: tyto-api
-    ports:
-      - "8000:8000"
     depends_on:
       - influxdb
+    ports:
+      - "8000:8000"
+    networks:
+      - tyto-internal
+      - proxy-net
     restart: unless-stopped
+    # Plus besoin d'exposer le port 8000 ici, Traefik s'en charge !
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.tyto-api.rule=Host(`weather-api.owl-nest.ch`)"
+      - "traefik.http.routers.tyto-api.entrypoints=web"
+      - "traefik.http.services.tyto-api.loadbalancer.server.port=8000"
 
 volumes:
+  # Remplacer par le nom exact de tes volumes externes (ex: infra_influxdb-data)
   influxdb-data:
     external: true
     name: tyto_influxdb-data
   influxdb-config:
     external: true
     name: tyto_influxdb-config
+
+networks:
+  proxy-net:
+    external: true
+  tyto-internal:
