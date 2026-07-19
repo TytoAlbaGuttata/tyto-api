@@ -1,0 +1,37 @@
+{
+  "name": "tyto-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![InfluxDB](https://img.shields.io/badge/InfluxDB-22ADF6?style=for-the-badge&logo=influxdb&logoColor=white) ![Raspberry Pi](https://img.shields.io/badge/-RaspberryPi-C51A4A?style=for-the-badge&logo=Raspberry-Pi)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc static/script.ts",
+    "lint": "eslint \"static/**/*.ts\"",
+    "lint:fix": "eslint \"static/**/*.ts\" --fix",
+    "format": "prettier --write \"static/*.{ts,html,css}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TytoAlbaGuttata/tyto-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TytoAlbaGuttata/tyto-api/issues"
+  },
+  "homepage": "https://github.com/TytoAlbaGuttata/tyto-api#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.64.0",
+    "@typescript-eslint/parser": "^8.64.0",
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.5",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "typescript-eslint": "^8.64.0"
+  }
+}

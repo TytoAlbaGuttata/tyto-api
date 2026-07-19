@@ -1,82 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tyto Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <div class="title-area">
-                <h1 data-i18n="dashboardTitle">Tyto Dashboard</h1>
-                <p class="subtitle" data-i18n="dashboardSubtitle">Telemetry Yielding Thermal Observations</p>
-            </div>
-            <div class="controls">
-                <button id="themeToggle" class="icon-btn" title="Passer en mode sombre"><i class="fas fa-moon"></i></button>
-                <button id="langToggle" class="icon-btn" title="Passer en anglais"><i class="fas fa-globe"></i></button>
+      <header>
+        <div class="title-area">
+          <h1 data-i18n="dashboardTitle">Tyto Dashboard</h1>
+          <p class="subtitle" data-i18n="dashboardSubtitle">
+            Telemetry Yielding Thermal Observations
+          </p>
+        </div>
+        <div class="controls">
+          <button id="themeToggle" class="icon-btn" title="Passer en mode sombre">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button id="langToggle" class="icon-btn" title="Passer en anglais">
+            <i class="fas fa-globe"></i>
+          </button>
 
-                <div class="segmented-control" id="timeSelector">
-                    <button class="segment" data-value="1">1h</button>
-                    <button class="segment" data-value="6">6h</button>
-                    <button class="segment" data-value="12">12h</button>
-                    <button class="segment active" data-value="24">24h</button>
-                    <button class="segment" data-value="48">48h</button>
-                </div>
-            </div>
-        </header>
+          <div class="segmented-control" id="timeSelector">
+            <button class="segment" data-value="6">6h</button>
+            <button class="segment" data-value="12">12h</button>
+            <button class="segment active" data-value="24">24h</button>
+            <button class="segment" data-value="48">48h</button>
+          </div>
+        </div>
+      </header>
 
-        <!-- Zone des moyennes -->
-        <section class="averages-grid">
-            <div class="card primary-border">
-                <h3 data-i18n="tempAverage">Température (Moyenne)</h3>
-                <p id="avg-temp" class="value primary-text">-- °C</p>
-                <p class="min-max">
-                    <span class="min"><span data-i18n="min">Min:</span> <span id="min-temp">--</span></span> |
-                    <span class="max"><span data-i18n="max">Max:</span> <span id="max-temp">--</span></span>
-                </p>
-            </div>
-            <div class="card">
-                <h3 data-i18n="humidityAverage">Humidité (Moyenne)</h3>
-                <p id="avg-hum" class="value">-- %</p>
-                <p class="min-max">
-                    <span class="min"><span data-i18n="min">Min:</span> <span id="min-hum">--</span></span> |
-                    <span class="max"><span data-i18n="max">Max:</span> <span id="max-hum">--</span></span>
-                </p>
-            </div>
-            <div class="card">
-                <h3 data-i18n="pressureAverage">Pression (Moyenne)</h3>
-                <p id="avg-pres" class="value">-- hPa</p>
-                <p class="min-max">
-                    <span class="min">Min: <span id="min-pres">--</span></span> |
-                    <span class="max">Max: <span id="max-pres">--</span></span>
-                </p>
-            </div>
-        </section>
+      <!-- Zone des moyennes -->
+      <section class="averages-grid">
+        <div class="card primary-border">
+          <h3 data-i18n="tempAverage">Température (Moyenne)</h3>
+          <p id="avg-temp" class="value primary-text">-- °C</p>
+          <p class="min-max">
+            <span class="min"><span data-i18n="min">Min:</span> <span id="min-temp">--</span></span>
+            |
+            <span class="max"><span data-i18n="max">Max:</span> <span id="max-temp">--</span></span>
+          </p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="humidityAverage">Humidité (Moyenne)</h3>
+          <p id="avg-hum" class="value">-- %</p>
+          <p class="min-max">
+            <span class="min"><span data-i18n="min">Min:</span> <span id="min-hum">--</span></span>
+            |
+            <span class="max"><span data-i18n="max">Max:</span> <span id="max-hum">--</span></span>
+          </p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="pressureAverage">Pression (Moyenne)</h3>
+          <p id="avg-pres" class="value">-- hPa</p>
+          <p class="min-max">
+            <span class="min">Min: <span id="min-pres">--</span></span> |
+            <span class="max">Max: <span id="max-pres">--</span></span>
+          </p>
+        </div>
+      </section>
 
-        <!-- Zone des graphiques -->
-        <section class="charts-grid">
-            <div class="card">
-                <div class="chart-container"><canvas id="chart1"></canvas></div>
-            </div>
-            <div class="card">
-                <div class="chart-container"><canvas id="chart2"></canvas></div>
-            </div>
-            <div class="card">
-                <div class="chart-container"><canvas id="chart3"></canvas></div>
-            </div>
-        </section>
+      <!-- Zone des graphiques -->
+      <section class="charts-grid">
+        <div class="card">
+          <div class="chart-container"><canvas id="chart1"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="chart-container"><canvas id="chart2"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="chart-container"><canvas id="chart3"></canvas></div>
+        </div>
+      </section>
 
-        <footer>
-            <p><span data-i18n="project">Projet TYTO</span> |
-                <a href="https://github.com/tytoalbaguttata/tyto-api" target="_blank"><i class="fab fa-github"></i> <span data-i18n="tytoAPI">Tyto API</span></a> -
-                <a href="https://github.com/tytoalbaguttata/tyto-esp" target="_blank"><i class="fab fa-github"></i> <span data-i18n="tytoESP">Tyto ESP</span></a>
-            </p>
-        </footer>
+      <footer>
+        <p>
+          <span data-i18n="project">Projet TYTO</span> |
+          <a href="https://github.com/tytoalbaguttata/tyto-api" target="_blank"
+            ><i class="fab fa-github"></i> <span data-i18n="tytoAPI">Tyto API</span></a
+          >
+          -
+          <a href="https://github.com/tytoalbaguttata/tyto-esp" target="_blank"
+            ><i class="fab fa-github"></i> <span data-i18n="tytoESP">Tyto ESP</span></a
+          >
+        </p>
+      </footer>
     </div>
     <script src="/static/script.js"></script>
-</body>
+  </body>
 </html>
