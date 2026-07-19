@@ -1,22 +1,25 @@
 # TYTO (Telemetry Yielding Thermal Observations)
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![InfluxDB](https://img.shields.io/badge/InfluxDB-22ADF6?style=for-the-badge&logo=influxdb&logoColor=white) ![Raspberry Pi](https://img.shields.io/badge/-RaspberryPi-C51A4A?style=for-the-badge&logo=Raspberry-Pi)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![InfluxDB](https://img.shields.io/badge/InfluxDB-22ADF6?style=for-the-badge&logo=influxdb&logoColor=white) ![Raspberry Pi](https://img.shields.io/badge/-RaspberryPi-C51A4A?style=for-the-badge&logo=Raspberry-Pi)
 
 ## Project Overview
-TYTO is a home weather station project. This central repository hosts the API built with FastAPI and the InfluxDB database used to store environmental data. In the future, this API will serve historical data for a graphical interface.
+TYTO is a home weather station project. This central repository hosts the FastAPI backend, the InfluxDB database for telemetry data, and a built-in interactive dashboard to visualize environmental metrics.
 
 ### Architecture
 
 ```mermaid
 graph LR
     A[BME280 Sensor] -->|I2C| B(ESP32 Node)
-    B -->|Wi-Fi / POST| C(FastAPI)
-    C -->|Write| D[(InfluxDB)]
+    B -->|Wi-Fi / POST| C(FastAPI API & Backend)
+    C <-->|Write / Read| D[(InfluxDB)]
+    E[Web Dashboard] -->|HTTP GET| C
+
 ```
 
-* **FastAPI**: Provides the HTTP endpoints to receive sensor data.
+* **FastAPI**: Provides HTTP endpoints to receive sensor data and serve historical metrics.
+* **Web Dashboard**: A responsive, bilingual (EN/FR) frontend interface built with TypeScript, HTML/CSS, and Chart.js, featuring dark mode and dynamic time-range selection.
 * **InfluxDB**: Time-series database storing temperature, humidity, and pressure measurements.
-* **Docker**: The entire application stack is containerized using Docker Compose for easy deployment.
+* **Docker**: The application stack, including the Node.js TypeScript compilation, is containerized using multi-stage builds.
 
 ## Prerequisites
 
@@ -48,17 +51,23 @@ INFLUXDB_ORG = "your_organization"
 INFLUXDB_BUCKET = "your_bucket_name"
 ```
 
-### 3. Start the API
+### 3. Start the Application
 
-Build and start the complete stack:
+Build and start the complete stack (this will automatically compile the TypeScript frontend):
 
 ```bash
 docker compose up -d --build
 ```
 
+You can now access your dashboard at `http://<YOUR_PI_IP>:8000/dashboard`.
+
 ## API Endpoints
 
 * `POST /api/measurements`: Receives JSON payloads containing `temperature`, `humidity`, and `pressure` data from the sensor nodes.
+* `GET /api/measurements`: Retrieves historical measurement data.
+* `GET /api/measurements/average`: Returns average values for a specified time range.
+* `GET /api/measurements/min`: Returns minimum values for a specified time range.
+* `GET /api/measurements/max`: Returns maximum values for a specified time range.
 
 ## Next Step: Sensor Node
 
