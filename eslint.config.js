@@ -2,13 +2,8 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
-export default tseslint.config(
+export default [
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
-  {
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off" // Indispensable pour éviter l'erreur sur ton "declare const Chart: any"
-    }
-  }
-);
+];
