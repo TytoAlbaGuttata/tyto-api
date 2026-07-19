@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -8,14 +9,7 @@ import config
 # Create FastAPI
 app = FastAPI(title="TYTO API", description="API for TYTO weather station")
 
-# Add CORS to allow queries from other domain
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Define data model
 class SensorData(BaseModel):
@@ -126,3 +120,54 @@ def get_average(hours: int = 24):
         return averages
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Create route to get the min in the last hours
+@app.get("/api/measurements/min")
+def get_min(hours: int = 24):
+    try:
+        query = f"""
+            from(bucket: "{config.INFLUXDB_BUCKET}")
+            |> range(start: -{hours}h)
+            |> filter(fn: (r) => r["_measurement"] == "environment")
+            |> min()
+        """
+
+        tables = query_api.query(query, org=config.INFLUXDB_ORG)
+
+        mins = {}
+        for table in tables:
+            for record in table.records:
+                field = record.get_field()
+                mins[field] = round(record.get_value(), 2)
+
+        return mins
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Create route to get the max in the last hours
+@app.get("/api/measurements/max")
+def get_max(hours: int = 24):
+    try:
+        query = f"""
+            from(bucket: "{config.INFLUXDB_BUCKET}")
+            |> range(start: -{hours}h)
+            |> filter(fn: (r) => r["_measurement"] == "environment")
+            |> max()
+        """
+
+        tables = query_api.query(query, org=config.INFLUXDB_ORG)
+
+        maxs = {}
+        for table in tables:
+            for record in table.records:
+                field = record.get_field()
+                maxs[field] = round(record.get_value(), 2)
+
+        return maxs
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Create route to display dashboard
+@app.get("/dashboard")
+def get_dashboard():
+    return FileResponse("static/index.html")
