@@ -9,3 +9,6 @@ config.py
 
 # Mac OS
 .DS_Store
+
+# Compilation files
+static/script.js
