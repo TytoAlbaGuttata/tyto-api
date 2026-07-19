@@ -133,7 +133,7 @@ def get_average(hours: int = 24):
 
 # Create route to get the min in the last hours
 @app.get("/api/measurements/min")
-def get_average(hours: int = 24):
+def get_min(hours: int = 24):
     try:
         query = f"""
             from(bucket: "{config.INFLUXDB_BUCKET}")
@@ -156,7 +156,7 @@ def get_average(hours: int = 24):
 
 # Create route to get the max in the last hours
 @app.get("/api/measurements/max")
-def get_average(hours: int = 24):
+def get_max(hours: int = 24):
     try:
         query = f"""
             from(bucket: "{config.INFLUXDB_BUCKET}")
