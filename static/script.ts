@@ -1,9 +1,11 @@
 declare const Chart: any;
 
+// Primary colors for light/dark themes and API base endpoint
 const LIGHT_PRIMARY = '#003a69';
 const DARK_PRIMARY = '#0d92cf';
 const API_BASE_URL = 'https://weather-api.owl-nest.ch/api';
 
+// Simple maps and typed shapes used in the script
 interface ChartsMap {
   [key: string]: any;
 }
@@ -19,8 +21,10 @@ interface Measurement {
   pressure: number;
 }
 
+// Container for Chart.js instances keyed by canvas id
 const charts: ChartsMap = {};
 
+// Localized strings (French / English). Keys referenced by data-i18n attributes.
 const translations: Record<string, Record<string, string>> = {
   fr: {
     dashboardTitle: 'Tableau de bord TYTO',
@@ -62,6 +66,7 @@ const translations: Record<string, Record<string, string>> = {
 
 let currentLang = 'fr';
 
+// Update tooltip/title attributes for theme and language toggle buttons
 function updateTooltips(): void {
   const isDark = document.body.classList.contains('dark-mode');
   const themeToggle = document.getElementById('themeToggle') as HTMLButtonElement;
@@ -73,6 +78,7 @@ function updateTooltips(): void {
   langToggle.title = translations[currentLang]['switchLang'];
 }
 
+// Change UI language and update chart dataset labels accordingly
 function changeLanguage(lang: string): void {
   currentLang = lang;
   document.querySelectorAll('[data-i18n]').forEach((el) => {
@@ -90,6 +96,7 @@ function changeLanguage(lang: string): void {
   updateTooltips();
 }
 
+// Apply colors and text color to all charts based on current theme
 function updateChartColors() {
   const isDark = document.body.classList.contains('dark-mode');
   const textColor = isDark ? '#e0e0e0' : '#666666';
@@ -115,6 +122,7 @@ function updateChartColors() {
   });
 }
 
+// Initialize UI once DOM is ready: language toggle, theme, charts and segments
 window.addEventListener('DOMContentLoaded', () => {
   const langToggle = document.getElementById('langToggle') as HTMLButtonElement;
   langToggle.addEventListener('click', () => {
@@ -125,12 +133,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('themeToggle') as HTMLButtonElement;
   if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
 
+  // Set initial icon for theme button
   const isDarkInitial = document.body.classList.contains('dark-mode');
   themeToggle.innerHTML = isDarkInitial
     ? '<i class="fas fa-sun"></i>'
     : '<i class="fas fa-moon"></i>';
 
   themeToggle.addEventListener('click', () => {
+    // Toggle theme, persist choice, update charts and tooltips
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -152,6 +162,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const activeSegment = document.querySelector('.segment.active') as HTMLButtonElement;
   updateData(Number.parseInt(activeSegment.dataset.value!));
 
+  // Segment buttons switch the hours range for fetched data
   segments.forEach((segment) => {
     segment.addEventListener('click', (e) => {
       segments.forEach((btn) => btn.classList.remove('active'));
@@ -164,6 +175,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Create a Chart.js line chart on the given canvas id with a single dataset
 function initChart(canvasId: string, label: string, color: string): void {
   const ctx = document.getElementById(canvasId) as HTMLCanvasElement;
   charts[canvasId] = new Chart(ctx, {
@@ -194,6 +206,7 @@ function initChart(canvasId: string, label: string, color: string): void {
   });
 }
 
+// Fetch average / min / max / history in parallel and update DOM and charts
 async function updateData(hours: number): Promise<void> {
   try {
     const [avgRes, minRes, maxRes, histRes] = await Promise.all([
@@ -237,11 +250,13 @@ async function updateData(hours: number): Promise<void> {
     if (histRes.ok) {
       const history: Measurement[] = await histRes.json();
 
+      // Convert ISO timestamps to localized display labels
       const labels = history.map((m) => {
         const date = new Date(m.time);
         return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
       });
 
+      // Update each chart's labels and dataset and trigger redraw
       charts['chart1'].data.labels = labels;
       charts['chart1'].data.datasets[0].data = history.map((m) => m.temperature);
       charts['chart1'].update();
@@ -255,6 +270,7 @@ async function updateData(hours: number): Promise<void> {
       charts['chart3'].update();
     }
   } catch (error) {
+    // Log network or JSON errors without interrupting the UI
     console.error('Erreur lors de la récupération des données :', error);
   }
 }
