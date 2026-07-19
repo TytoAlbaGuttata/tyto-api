@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY static/ ./static/
-RUN npx tsc static/script.ts --target ES6
+RUN npx tsc static/script.ts --target ES2020
 
 # Final API image
 FROM python:3.11-slim
