@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -11,15 +10,6 @@ import config
 app = FastAPI(title="TYTO API", description="API for TYTO weather station")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Add CORS to allow queries from other domain
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Define data model
 class SensorData(BaseModel):
