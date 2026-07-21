@@ -5,7 +5,7 @@ services:
     image: influxdb:latest
     container_name: influxdb
     ports:
-      - "8086:8086" # Gardé pour que tu puisses accéder à l'interface InfluxDB en local
+      - "8086:8086"
     volumes:
       - influxdb-data:/var/lib/influxdb2
       - influxdb-config:/etc/influxdb2
@@ -24,7 +24,6 @@ services:
       - tyto-internal
       - proxy-net
     restart: unless-stopped
-    # Plus besoin d'exposer le port 8000 ici, Traefik s'en charge !
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy-net"
@@ -33,7 +32,6 @@ services:
       - "traefik.http.services.tyto-api.loadbalancer.server.port=8000"
 
 volumes:
-  # Remplacer par le nom exact de tes volumes externes (ex: infra_influxdb-data)
   influxdb-data:
     external: true
     name: tyto_influxdb-data
